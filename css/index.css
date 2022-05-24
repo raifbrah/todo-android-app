@@ -1,0 +1,406 @@
+* {
+    -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+    box-sizing: border-box;
+    color: #000;
+}
+
+body {
+    color: #000;
+    background: #eee;
+    font-family: sans-serif;
+}
+h1 {
+    margin-left: 20px;
+}
+.input {
+    z-index: 1500;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    transform: translateY(-100%);
+
+    padding: calc(2vw + 22px);
+    transition: .3s;
+}
+.input .divtext {
+    width: 100%;
+    min-height: 45px;
+    max-height: 70vh;
+
+    overflow: auto;
+
+    font-size: 17px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: #fff;
+    border: 3px solid #0a7;
+}
+.input button {
+    display: none;
+    color: #fff;
+    border: none;
+    outline: none;
+    background: #0a7;
+    font-weight: 500;
+    border-radius: 0 5px 5px 0;
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Chrome/Safari/Opera */
+    -khtml-user-select: none;    /* Konqueror */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none; 
+}
+.todo {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    padding: 2vw 2vw 10px;
+}
+.todo__elem {
+    display: flex;
+    column-gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    
+    padding: 15px 10px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0px 2px 7px #3331;
+}
+.todo-details__summary {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    
+    padding: 10px calc(2vw + 17px);
+    font-size: 18px;
+    color: #0a7;
+    
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Chrome/Safari/Opera */
+    -khtml-user-select: none;    /* Konqueror */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none;
+}
+.todo-details:focus,
+.todo-details__summary:focus {
+    outline: none;
+}
+.todo-details__triangle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 10px;
+    height: 10px;
+    
+    transition: .3s;
+}
+.todo-details__triangle::before,
+.todo-details__triangle::after {
+    content: "";
+    position: absolute;
+    
+    background: #0a7;
+    width: 7px;
+    height: 1.7px;
+    transform-origin: right;
+    border-radius: 30px;
+    transform: translate(-1px, .6px) rotate(45deg);
+}
+.todo-details__triangle::after {
+    transform: translate(-1px, -.6px) rotate(-45deg);
+}
+.checkbox-label {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.checkbox-label__checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    width: 25px;
+    height: 25px;
+    
+    border: 2px solid #0a7;
+    border-radius: 50%;
+}
+.todo__checkbox:checked + .checkbox-label__checkbox {
+    background: #0a7;
+}
+.todo__checkbox:checked + .checkbox-label__checkbox:before,
+.todo__checkbox:checked + .checkbox-label__checkbox:after {
+    content: "";
+    position: absolute;
+    
+    width: 12px;
+    height: 1.8px;
+    
+    background: #fff;
+    border-radius: 100px;
+    transform: translate(2px) rotate(-55deg);
+}
+.todo__checkbox:checked + .checkbox-label__checkbox:after {
+    width: 6px;
+    transform: translate(-2.7px, 2.7px) rotate(-135deg);
+}
+.todo__checkbox {
+    display: none;
+}
+.todo__text {
+    width: 100%;
+    word-break: break-word;
+}
+.completed-tasks .todo__text {
+    color: #777;
+    text-decoration: line-through;
+}
+.todo__delete-btn {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    font-size: 25px;
+    color: #0a7;
+    outline: none;
+    border: none;
+    background: none;
+    border-radius: 3px;
+    transform: rotate(45deg);
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Chrome/Safari/Opera */
+    -khtml-user-select: none;    /* Konqueror */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none; 
+}
+.todo__delete-btn:before,
+.todo__delete-btn:after {
+    content: "";
+    position: absolute;
+    width: 15px;
+    height: 2.2px;
+    
+    background: #0a7;
+    border-radius: 1px;
+}
+.todo__delete-btn:after {
+    width: 2.2px;
+    height: 15px;
+}
+
+
+/* COMPLETED TASKS
+=====================*/
+.completed-tasks {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    padding: 10px 2vw 80px;
+}
+
+
+/* CONFIRM WINDOW
+=========================*/
+.confirm-window {
+    z-index: 2000;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    transform: translateY(100%);
+    width: 100vw;
+    
+    display: flex;
+    row-gap: 30px;
+    flex-direction: column;
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Chrome/Safari/Opera */
+    -khtml-user-select: none;    /* Konqueror */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none; 
+    
+    padding: 35px 0;
+    background: #fff;
+    border-radius: 30px 30px 0 0;
+    transition: .3s;
+}
+.confirm-window .buttons {
+    width: 100%;
+    display: flex;
+    column-gap: 5vw;
+    justify-content: center;
+}
+.confirm-window .cancel,
+.confirm-window .delete {
+    width: 35vw;
+    height: 12vw;
+    border: none;
+    border-radius: 3px;
+    font-size: 18px;
+}
+.confirm-window .cancel {
+    color: #000;
+    background: #eee;
+}
+.confirm-window .delete {
+    color: #fff;
+    background: #0a7;
+}
+.confirm-window__title {
+    font-size: 20px;
+    text-align: center;
+    
+    margin: 0;
+}
+.confirm-close-bg {
+    z-index: -5;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    
+    opacity: 0;
+    background: #000;
+    animation: conf-bg__close .3s;
+}
+.confirm-close-bg__open {
+    z-index: 10;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    
+    opacity: .7;
+    background: #000;
+    animation: conf-bg__open .3s;
+}
+
+
+/* ACTION BTN
+=================*/
+.action-btn {
+    z-index: 1500;
+    position: fixed;
+    right: 25px;
+    bottom: 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 60px;
+    height: 60px;
+
+    transform: rotate(0);
+    border: none;
+    background: #0a7;
+    border-radius: 100%;
+    box-shadow: 0px 2px 7px #3335;
+    transition: .3s;
+}
+.action-btn::before,
+.action-btn::after {
+    content: "";
+    position: absolute;
+    
+    width: 20px;
+    height: 2.5px;
+
+    background: #fff;
+    border-radius: 100px;
+    transition: inherit;
+}
+.action-btn::after {
+    width: 2.5px;
+    height: 20px;
+}
+/* ========================= */
+.action-btn__check-mark {
+    z-index: 1500;
+    position: fixed;
+    right: 25px;
+    bottom: 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 60px;
+    height: 60px;
+
+    transform: rotate(180deg);
+    border: none;
+    background: #0a7;
+    border-radius: 100%;
+    box-shadow: 0px 2px 7px #3330;
+    transition: .3s;
+}
+.action-btn__check-mark::before,
+.action-btn__check-mark::after {
+    content: "";
+    position: absolute;
+    
+    width: 13px;
+    height: 2.5px;
+
+    background: #fff;
+    border-radius: 100px;
+    transition: inherit;
+}
+.action-btn__check-mark::before {
+    transform: translate(7.5px, -9px) rotate(40deg);
+    transform-origin: left;
+}
+.action-btn__check-mark::after {
+    width: 2.5px;
+    height: 25px;
+    transform: translate(2px, 3px) rotate(35deg);
+    transform-origin: top;
+}
+
+
+
+@keyframes conf-bg__open {
+    0% {
+        z-index: -5;
+        opacity: 0;
+    }
+    1% {
+        z-index: 10;
+    }
+    100% {
+        z-index: 10;
+        opacity: .7;
+    }
+}
+@keyframes conf-bg__close {
+    0% {
+        opacity: .7;
+        z-index: 10;
+    }
+    99% {
+        z-index: 999;
+    }
+    100% {
+        opacity: 0;
+        z-index: -5;
+    }
+}
